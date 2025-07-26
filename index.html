@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="clckd" content="eb26caeea418bde3b2aa6730e8c2d9e5" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Midas Run</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #111; color: white; font-family: sans-serif; }
+    canvas { display: block; margin: 0 auto; background: #222; border: 2px solid #555; }
+    #shop {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      background: #333;
+      padding: 10px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      z-index: 9999;
+    }
+    #shop button {
+      margin-top: 5px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="800" height="400"></canvas>
+
+  <!-- Boutique -->
+  <div id="shop">
+    <div><strong>Boutique</strong></div>
+    <div>Coins: <span id="coinCount">0</span></div>
+    <button onclick="buyHP()">+1 Vie (10 pièces)</button>
+    <button onclick="buySpeed()">+1 Vitesse (15 pièces)</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    let player, gravity, jumpPower, score, coins, gameOverFlag;
+    let obstacles, coinList;
+
+    function initGame() {
+      player = { x: 50, y: 300, width: 50, height: 50, color: "gold", dy: 0, onGround: false, hp: 1, speed: 8 };
+      gravity = 1;
+      jumpPower = -15;
+      score = 0;
+      coins = 0;
+      gameOverFlag = false;
+      obstacles = [];
+      coinList = [];
+      document.getElementById("coinCount").innerText = coins;
+    }
+
+    function spawnObstacle() {
+      const height = Math.random() * 50 + 20;
+      obstacles.push({ x: 800, y: 400 - height, width: 20, height: height });
+    }
+
+    function spawnCoin() {
+      const y = 350 - Math.random() * 100;
+      coinList.push({ x: 800, y: y, radius: 10 });
+    }
+
+    function update() {
+      if (gameOverFlag) return;
+
+      player.dy += gravity;
+      player.y += player.dy;
+
+      if (player.y + player.height >= 400) {
+        player.y = 400 - player.height;
+        player.dy = 0;
+        player.onGround = true;
+      } else {
+        player.onGround = false;
+      }
+
+      obstacles.forEach(ob => {
+        ob.x -= player.speed;
+        if (
+          player.x < ob.x + ob.width &&
+          player.x + player.width > ob.x &&
+          player.y < ob.y + ob.height &&
+          player.y + player.height > ob.y
+        ) {
+          player.hp--;
+          if (player.hp <= 0 && !gameOverFlag) {
+            gameOver();
+          }
+        }
+      });
+
+      coinList.forEach((coin, index) => {
+        coin.x -= player.speed;
+        const dx = player.x + player.width / 2 - coin.x;
+        const dy = player.y + player.height / 2 - coin.y;
+        if (Math.sqrt(dx * dx + dy * dy) < player.width / 2 + coin.radius) {
+          coins++;
+          document.getElementById("coinCount").innerText = coins;
+          coinList.splice(index, 1);
+        }
+      });
+
+      score++;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      ctx.fillStyle = "red";
+      obstacles.forEach(ob => ctx.fillRect(ob.x, ob.y, ob.width, ob.height));
+
+      ctx.fillStyle = "yellow";
+      coinList.forEach(coin => {
+        ctx.beginPath();
+        ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = "white";
+      ctx.fillText("Score: " + score, 10, 20);
+      ctx.fillText("Coins: " + coins, 10, 40);
+      ctx.fillText("HP: " + player.hp, 10, 60);
+    }
+
+    function gameOver() {
+      gameOverFlag = true;
+
+      const deathMsg = document.createElement("div");
+      deathMsg.innerText = "Tu es mort !";
+      deathMsg.style.position = "fixed";
+      deathMsg.style.top = "50%";
+      deathMsg.style.left = "50%";
+      deathMsg.style.transform = "translate(-50%, -50%)";
+      deathMsg.style.background = "rgba(0, 0, 0, 0.8)";
+      deathMsg.style.color = "white";
+      deathMsg.style.padding = "20px 40px";
+      deathMsg.style.fontSize = "24px";
+      deathMsg.style.borderRadius = "10px";
+      deathMsg.style.zIndex = 9999;
+      document.body.appendChild(deathMsg);
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+    }
+
+    function buyHP() {
+      if (coins >= 10) {
+        coins -= 10;
+        player.hp++;
+        document.getElementById("coinCount").innerText = coins;
+      }
+    }
+
+    function buySpeed() {
+      if (coins >= 15) {
+        coins -= 15;
+        player.speed++;
+        document.getElementById("coinCount").innerText = coins;
+      }
+    }
+
+    window.addEventListener("keydown", e => {
+      if (e.code === "Space" && player.onGround && !gameOverFlag) {
+        player.dy = jumpPower;
+      }
+    });
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    setInterval(spawnObstacle, 1000);
+    setInterval(spawnCoin, 2500);
+
+    initGame();
+    gameLoop();
+  </script>
+</body>
+</html>
