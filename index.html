@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="6a97888e-site-verification" content="72ac76c448146dcbac66bce5a4219ec2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Midas Run</title>
+  <meta name="clckd" content="8dff77dc9cdf056e28a33440655df13b" />
+  <meta name="6a97888e-site-verification" content="72ac76c448146dcbac66bce5a4219ec2" />
   <style>
     body { margin: 0; overflow: hidden; background: #111; color: white; font-family: sans-serif; }
     canvas { display: block; margin: 0 auto; background: #222; border: 2px solid #555; }
@@ -22,32 +23,6 @@
       margin-top: 5px;
       width: 100%;
     }
-    #gameOverScreen {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8);
-      padding: 20px;
-      border-radius: 10px;
-      display: none;
-      z-index: 9999;
-      text-align: center;
-    }
-    #gameOverScreen button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-    /* Style pour la bannière */
-    #adBanner {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      background: transparent;
-    }
   </style>
 </head>
 <body>
@@ -60,17 +35,10 @@
     <button onclick="buySpeed()">+1 Vitesse (15 pièces)</button>
   </div>
 
-  <div id="gameOverScreen">
-    <h2>Game Over</h2>
-    <button id="restart" onclick="location.reload()">Rejouer</button>
-  </div>
-
-  <!-- Nouvelle bannière publicitaire -->
-  <div id="adBanner">
-    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
-    <ins class="eas6a97888e2" data-zoneid="5685894"></ins> 
-    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-  </div>
+  <!-- Publicité -->
+  <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+  <ins class="eas6a97888e2" data-zoneid="5685894"></ins> 
+  <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
 
   <script>
     const canvas = document.getElementById("game");
@@ -167,7 +135,8 @@
 
     function gameOver() {
       gameOverFlag = true;
-      document.getElementById("gameOverScreen").style.display = "block";
+      // Recharge la page automatiquement dès la mort
+      location.reload();
     }
 
     function buyHP() {
@@ -195,14 +164,14 @@
     setInterval(spawnObstacle, 1000);
     setInterval(spawnCoin, 2500);
 
-    initGame();
-    gameLoop();
-
     function gameLoop() {
       update();
       draw();
       requestAnimationFrame(gameLoop);
     }
+
+    initGame();
+    gameLoop();
   </script>
 </body>
 </html>
