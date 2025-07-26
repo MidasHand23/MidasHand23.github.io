@@ -3,49 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="clckd" content="8dff77dc9cdf056e28a33440655df13b" />
-  <meta name="juicyads-site-verification" content="c044049806d179f879791d9ba408ba50" />
   <title>Midas Run</title>
+
+  <!-- Vérification Clckd ou autres si nécessaire -->
+  <meta name="clckd" content="eb26caeea418bde3b2aa6730e8c2d9e5" />
+  <meta name="juicyads-site-verification" content="c044049806d179f879791d9ba408ba50" />
+
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #111;
-      color: white;
-      font-family: sans-serif;
-    }
-    canvas {
-      display: block;
-      margin: 0 auto;
-      background: #222;
-      border: 2px solid #555;
-    }
-    #shop {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      background: #333;
-      padding: 10px;
-      border: 1px solid #555;
-      border-radius: 5px;
-      z-index: 9999;
-    }
-    #shop button {
-      margin-top: 5px;
-      width: 100%;
+    body { margin: 0; overflow-x: hidden; background: #111; color: white; font-family: sans-serif; text-align: center; }
+    canvas { display: block; margin: 20px auto; background: #222; border: 2px solid #555; }
+    #adContainer {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <canvas id="game" width="800" height="400"></canvas>
-  <div id="shop">
-    <div><strong>Boutique</strong></div>
-    <div>Coins: <span id="coinCount">0</span></div>
-    <button onclick="buyHP()">+1 Vie (10 pièces)</button>
-    <button onclick="buySpeed()">+1 Vitesse (15 pièces)</button>
+
+  <!-- ✅ Bannière JuicyAds -->
+  <div id="adContainer">
+    <!-- JuicyAds v3.0 -->
+    <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+    <ins id="1097262" data-width="474" data-height="190"></ins>
+    <script type="text/javascript" data-cfasync="false" async>
+      (adsbyjuicy = window.adsbyjuicy || []).push({'adzone': 1097262});
+    </script>
+    <!-- JuicyAds END -->
   </div>
 
   <script>
+    // Ton code JS du jeu ici
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
@@ -61,7 +48,6 @@
       gameOverFlag = false;
       obstacles = [];
       coinList = [];
-      document.getElementById("coinCount").innerText = coins;
     }
 
     function spawnObstacle() {
@@ -98,7 +84,7 @@
         ) {
           player.hp--;
           if (player.hp <= 0 && !gameOverFlag) {
-            gameOver();
+            location.reload(); // Rafraîchit la page à la mort
           }
         }
       });
@@ -109,7 +95,6 @@
         const dy = player.y + player.height / 2 - coin.y;
         if (Math.sqrt(dx * dx + dy * dy) < player.width / 2 + coin.radius) {
           coins++;
-          document.getElementById("coinCount").innerText = coins;
           coinList.splice(index, 1);
         }
       });
@@ -138,48 +123,10 @@
       ctx.fillText("HP: " + player.hp, 10, 60);
     }
 
-    function gameOver() {
-      gameOverFlag = true;
-
-      const deathMsg = document.createElement("div");
-      deathMsg.innerText = "Tu es mort !";
-      deathMsg.style.position = "fixed";
-      deathMsg.style.top = "50%";
-      deathMsg.style.left = "50%";
-      deathMsg.style.transform = "translate(-50%, -50%)";
-      deathMsg.style.background = "rgba(0, 0, 0, 0.8)";
-      deathMsg.style.color = "white";
-      deathMsg.style.padding = "20px 40px";
-      deathMsg.style.fontSize = "24px";
-      deathMsg.style.borderRadius = "10px";
-      deathMsg.style.zIndex = 9999;
-      document.body.appendChild(deathMsg);
-
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
-    }
-
     function gameLoop() {
       update();
       draw();
       requestAnimationFrame(gameLoop);
-    }
-
-    function buyHP() {
-      if (coins >= 10) {
-        coins -= 10;
-        player.hp++;
-        document.getElementById("coinCount").innerText = coins;
-      }
-    }
-
-    function buySpeed() {
-      if (coins >= 15) {
-        coins -= 15;
-        player.speed++;
-        document.getElementById("coinCount").innerText = coins;
-      }
     }
 
     window.addEventListener("keydown", e => {
@@ -194,13 +141,5 @@
     initGame();
     gameLoop();
   </script>
-
-  <!-- ✅ JuicyAds Native Ads Script -->
-  <script type="text/javascript" data-id="juicyads-native-ads" data-ad-zone="1097258" data-targets="a" src="https://js.juicyads.com/juicyads.native-ads.min.js"></script>
-
-  <!-- ✅ JuicyAds v3.0 Banner Ad (300x250) -->
-  <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
-  <ins id="1097259" data-width="300" data-height="250"></ins>
-  <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1097259});</script>
 </body>
 </html>
