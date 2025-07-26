@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="clckd" content="8dff77dc9cdf056e28a33440655df13b" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+  <meta name="clckd" content="8dff77dc9cdf056e28a33440655df13b" />
   <title>Midas Run</title>
   <style>
-    body { margin: 0; overflow: hidden; background: #111; color: white; font-family: sans-serif; }
-    canvas { display: block; margin: 0 auto; background: #222; border: 2px solid #555; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #222;
+      border: 2px solid #555;
+    }
     #shop {
       position: fixed;
       top: 10px;
@@ -27,8 +37,6 @@
 </head>
 <body>
   <canvas id="game" width="800" height="400"></canvas>
-
-  <!-- Boutique -->
   <div id="shop">
     <div><strong>Boutique</strong></div>
     <div>Coins: <span id="coinCount">0</span></div>
@@ -151,6 +159,12 @@
       }, 2000);
     }
 
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
     function buyHP() {
       if (coins >= 10) {
         coins -= 10;
@@ -172,12 +186,6 @@
         player.dy = jumpPower;
       }
     });
-
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
 
     setInterval(spawnObstacle, 1000);
     setInterval(spawnCoin, 2500);
