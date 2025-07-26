@@ -1,39 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="6a97888e-site-verification" content="72ac76c448146dcbac66bce5a4219ec2" />
   <title>Midas Run</title>
-
-  <!-- Vérification Clckd ou autres si nécessaire -->
-  <meta name="clckd" content="eb26caeea418bde3b2aa6730e8c2d9e5" />
-  <meta name="juicyads-site-verification" content="c044049806d179f879791d9ba408ba50" />
-  <meta name="6a97888e-site-verification" content="72ac76c448146dcbac66bce5a4219ec2">
-
   <style>
-    body { margin: 0; overflow-x: hidden; background: #111; color: white; font-family: sans-serif; text-align: center; }
-    canvas { display: block; margin: 20px auto; background: #222; border: 2px solid #555; }
-    #adContainer {
-      margin-top: 20px;
+    body { margin: 0; overflow: hidden; background: #111; color: white; font-family: sans-serif; }
+    canvas { display: block; margin: 0 auto; background: #222; border: 2px solid #555; }
+    #shop {
+      position: fixed;
+      top: 10px;
+      right: 180px;
+      background: #333;
+      padding: 10px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      z-index: 9999;
+    }
+    #shop button {
+      margin-top: 5px;
+      width: 100%;
+    }
+    #gameOverScreen {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      z-index: 9999;
+      text-align: center;
+    }
+    #gameOverScreen button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    /* Style pour la bannière */
+    #adBanner {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: transparent;
     }
   </style>
 </head>
 <body>
   <canvas id="game" width="800" height="400"></canvas>
 
-  <!-- ✅ Bannière JuicyAds -->
-  <div id="adContainer">
-    <!-- JuicyAds v3.0 -->
-    <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
-    <ins id="1097262" data-width="474" data-height="190"></ins>
-    <script type="text/javascript" data-cfasync="false" async>
-      (adsbyjuicy = window.adsbyjuicy || []).push({'adzone': 1097262});
-    </script>
-    <!-- JuicyAds END -->
+  <div id="shop">
+    <div><strong>Boutique</strong></div>
+    <div>Coins: <span id="coinCount">0</span></div>
+    <button onclick="buyHP()">+1 Vie (10 pièces)</button>
+    <button onclick="buySpeed()">+1 Vitesse (15 pièces)</button>
+  </div>
+
+  <div id="gameOverScreen">
+    <h2>Game Over</h2>
+    <button id="restart" onclick="location.reload()">Rejouer</button>
+  </div>
+
+  <!-- Nouvelle bannière publicitaire -->
+  <div id="adBanner">
+    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+    <ins class="eas6a97888e2" data-zoneid="5685894"></ins> 
+    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
   </div>
 
   <script>
-    // Ton code JS du jeu ici
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
@@ -49,6 +88,7 @@
       gameOverFlag = false;
       obstacles = [];
       coinList = [];
+      document.getElementById("coinCount").innerText = coins;
     }
 
     function spawnObstacle() {
@@ -85,7 +125,7 @@
         ) {
           player.hp--;
           if (player.hp <= 0 && !gameOverFlag) {
-            location.reload(); // Rafraîchit la page à la mort
+            gameOver();
           }
         }
       });
@@ -96,6 +136,7 @@
         const dy = player.y + player.height / 2 - coin.y;
         if (Math.sqrt(dx * dx + dy * dy) < player.width / 2 + coin.radius) {
           coins++;
+          document.getElementById("coinCount").innerText = coins;
           coinList.splice(index, 1);
         }
       });
@@ -124,10 +165,25 @@
       ctx.fillText("HP: " + player.hp, 10, 60);
     }
 
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
+    function gameOver() {
+      gameOverFlag = true;
+      document.getElementById("gameOverScreen").style.display = "block";
+    }
+
+    function buyHP() {
+      if (coins >= 10) {
+        coins -= 10;
+        player.hp++;
+        document.getElementById("coinCount").innerText = coins;
+      }
+    }
+
+    function buySpeed() {
+      if (coins >= 15) {
+        coins -= 15;
+        player.speed++;
+        document.getElementById("coinCount").innerText = coins;
+      }
     }
 
     window.addEventListener("keydown", e => {
@@ -141,6 +197,12 @@
 
     initGame();
     gameLoop();
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
   </script>
 </body>
 </html>
