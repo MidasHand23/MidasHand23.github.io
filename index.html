@@ -20,13 +20,24 @@
       z-index: 9999;
       width: 150px;
     }
-    /* Conteneur pour la pub à droite */
+    /* Pub droite */
     #right-ad {
       position: fixed;
       top: 50px;
       right: 0;
       width: 120px;
       height: 600px;
+      background: transparent;
+      z-index: 9999;
+    }
+    /* Pub bas */
+    #bottom-ad {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 474px; /* largeur adaptée */
+      height: 190px;
       background: transparent;
       z-index: 9999;
     }
@@ -51,6 +62,13 @@
   <div id="right-ad">
     <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
     <ins class="eas6a97888e2" data-zoneid="5686026"></ins> 
+    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+  </div>
+
+  <!-- Bannière pub en bas -->
+  <div id="bottom-ad">
+    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+    <ins class="eas6a97888e17" data-zoneid="5686028"></ins> 
     <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
   </div>
 
